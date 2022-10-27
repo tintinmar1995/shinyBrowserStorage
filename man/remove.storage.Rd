@@ -9,7 +9,7 @@ remove.storage(type, key, session)
 \arguments{
 \item{type}{Kind of browser storage to use (localStorage ou sessionStorage)}
 
-\item{key}{Identifier previoulsy used to store the wanted value}
+\item{key}{Identifier previously used to store the wanted value}
 
 \item{session}{Shiny session object}
 }

@@ -21,6 +21,20 @@ withBrowserStorage <- function(){
     "),
 
     tags$script("
+      Shiny.addCustomMessageHandler('input2storage', function(request) {
+        console.log('Saving input ' + request['inputId'] + ' in ' + request['type'] + '..');
+        value = document.getElementById(request['inputId'])[request['prop']]
+        if(request['type'] == 'localStorage'){
+          localStorage.setItem(request['key'], value);
+        } else if (request['type'] == 'sessionStorage'){
+          sessionStorage.setItem(request['key'], value);
+        } else {
+          console.error('Unknown type of browser storage !');
+        }
+      });
+    "),
+
+    tags$script("
       Shiny.addCustomMessageHandler('set_item', function(request) {
         console.log('Inserting ' + request['key'] + ' in ' + request['type'] + '..');
         if(request['type'] == 'localStorage'){
@@ -40,20 +54,6 @@ withBrowserStorage <- function(){
           localStorage.removeItem(request['key']);
         } else if (request['type'] == 'sessionStorage'){
           sessionStorage.removeItem(request['key']);
-        } else {
-          console.error('Unknown type of browser storage !');
-        }
-      });
-    "),
-
-    tags$script("
-      Shiny.addCustomMessageHandler('remove_item', function(request) {
-        console.log('Inserting input ' + request['inputId'] + ' in ' + request['type'] + '..');
-        value = document.getElementById(request['inputId']).value
-        if(request['type'] == 'localStorage'){
-          localStorage.setItem(request['key'], value);
-        } else if (request['type'] == 'sessionStorage'){
-          sessionStorage.setItem(request['key'], value);
         } else {
           console.error('Unknown type of browser storage !');
         }
@@ -101,7 +101,7 @@ write.storage <- function(type, key, value, session){
 #' Remove value from browser's localStorage or sessionStorage
 #'
 #' @param type Kind of browser storage to use (localStorage ou sessionStorage)
-#' @param key Identifier previoulsy used to store the wanted value
+#' @param key Identifier previously used to store the wanted value
 #' @param session Shiny session object
 #'
 #' @import shiny
@@ -114,7 +114,21 @@ remove.storage <- function(type, key, session){
   ))
 }
 
-
-input2storage <- function(type, inputId, key, session){
-
+#' Save an input's property into browser's storage
+#'
+#' @description
+#' Save an input's property directly in JavaScript into browser's storage
+#' without reading the input from R.
+#'
+#' @param type Kind of browser storage to use (localStorage ou sessionStorage)
+#' @param key Identifier to store value
+#' @param inputId The input's id
+#' @param prop The input's prop to save
+#' @param session Shiny session object
+#'
+#' @export
+#'
+input2storage <- function(type, key, inputId, prop, session){
+  session$sendCustomMessage("input2storage", list(
+    type=type, inputId=inputId, key=key, prop=prop))
 }

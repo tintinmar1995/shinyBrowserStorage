@@ -26,7 +26,8 @@ runDemo <- function(){
 
     observeEvent(input$set, {
       input$set
-      isolate({write.storage(input$type, input$key, input$value, session)})
+      # isolate({write.storage(input$type, input$key, input$value, session)})
+      isolate({input2storage(input$type, input$key, "value", "value", session)})
     })
 
     observeEvent(input$rm, {
