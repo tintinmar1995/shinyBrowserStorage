@@ -14,3 +14,11 @@ todo..
 ## Usage
 
 todo..
+
+## Demo
+
+```r
+shinyBrowserStorage::runDemo()
+```
+
+![image](https://user-images.githubusercontent.com/38179709/198247414-e394f920-14f3-4033-8d5c-a804437dfea2.png)
