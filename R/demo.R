@@ -24,15 +24,18 @@ runDemo <- function(){
   # Define server function
   server <- function(input, output, session) {
 
+    storage = list(
+      sessionStorage = SessionStorage$new(input, session),
+      localStorage = LocalStorage$new(input, session)
+    )
+
     observeEvent(input$set, {
-      input$set
-      # isolate({write.storage(input$type, input$key, input$value, session)})
-      isolate({input2storage(input$type, input$key, "value", "value", session)})
+      # write.storage(input$type, input$key, input$value, session)
+      input2storage(input$type, input$key, "value", "value", session)
     })
 
     observeEvent(input$rm, {
-      input$set
-      isolate({remove.storage(input$type, input$key, session)})
+      storage[[input$type]]$removeItem(input$key)
     })
 
     output$key <- renderText({
@@ -42,7 +45,11 @@ runDemo <- function(){
 
     output$value <- renderText({
       input$show
-      isolate({read.storage(input$type, input$key, input, session)})
+      selStorage = isolate({input$type})
+      selKey = isolate({input$key})
+
+      # getItem should not be isolated !
+      storage[[selStorage]]$getItem(selKey)
     })
 
   }

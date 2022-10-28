@@ -4,14 +4,14 @@
 \alias{input2storage}
 \title{Save an input's property into browser's storage}
 \usage{
-input2storage(type, inputId, key, prop = "value", session)
+input2storage(type, key, inputId, prop, session)
 }
 \arguments{
 \item{type}{Kind of browser storage to use (localStorage ou sessionStorage)}
 
-\item{inputId}{The input's id}
-
 \item{key}{Identifier to store value}
+
+\item{inputId}{The input's id}
 
 \item{prop}{The input's prop to save}
 

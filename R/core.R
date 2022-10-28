@@ -1,4 +1,11 @@
 
+.control.type <- function(type){
+  if(!type %in% c("localStorage", "sessionStorage")){
+    stop("Unknown browser storage")
+  }
+}
+
+
 #' Define JS handlers required by shinyBrowserStorage's functions
 #'
 #' @import shiny
@@ -49,7 +56,7 @@ withBrowserStorage <- function(){
 
     tags$script("
       Shiny.addCustomMessageHandler('remove_item', function(request) {
-        console.log('Inserting ' + request['key'] + ' in ' + request['type'] + '..');
+        console.log('Removing ' + request['key'] + ' from ' + request['type'] + '..');
         if(request['type'] == 'localStorage'){
           localStorage.removeItem(request['key']);
         } else if (request['type'] == 'sessionStorage'){
@@ -74,10 +81,9 @@ withBrowserStorage <- function(){
 #' @export
 #'
 read.storage <- function(type, key, input, session){
-  # Control type
+  .control.type(type)
   session$sendCustomMessage("get_item", list(
-    type=type, inputId=NS(type)(key), key=key
-  ))
+    type=type, inputId=NS(type)(key), key=key))
   return(input[[NS(type)(key)]])
 }
 
@@ -92,7 +98,7 @@ read.storage <- function(type, key, input, session){
 #' @export
 #'
 write.storage <- function(type, key, value, session){
-  # Control type
+  .control.type(type)
   session$sendCustomMessage("set_item", list(
     type=type, key=key, value=value
   ))
@@ -108,7 +114,7 @@ write.storage <- function(type, key, value, session){
 #' @export
 #'
 remove.storage <- function(type, key, session){
-  # Control type
+  .control.type(type)
   session$sendCustomMessage("remove_item", list(
     type=type, key=key
   ))
