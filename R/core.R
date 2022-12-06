@@ -26,7 +26,7 @@ withBrowserStorage <- function(){
         Shiny.setInputValue(request['inputId'], value);
       });
     "),
-
+    
     tags$script("
       Shiny.addCustomMessageHandler('input2storage', function(request) {
         console.log('Saving input ' + request['inputId'] + ' in ' + request['type'] + '..');
@@ -40,7 +40,7 @@ withBrowserStorage <- function(){
         }
       });
     "),
-
+    
     tags$script("
       Shiny.addCustomMessageHandler('set_item', function(request) {
         console.log('Inserting ' + request['key'] + ' in ' + request['type'] + '..');
@@ -53,7 +53,7 @@ withBrowserStorage <- function(){
         }
       });
     "),
-
+    
     tags$script("
       Shiny.addCustomMessageHandler('remove_item', function(request) {
         console.log('Removing ' + request['key'] + ' from ' + request['type'] + '..');
@@ -80,10 +80,17 @@ withBrowserStorage <- function(){
 #' @import shiny
 #' @export
 #'
-read.storage <- function(type, key, input, session){
+read.storage <- function(type, key, input, session, ns=NULL){
   .control.type(type)
-  session$sendCustomMessage("get_item", list(
-    type=type, inputId=NS(type)(key), key=key))
+  
+  if(!is.null(ns)){
+    inputId = ns(NS(type)(key))
+  } else {
+    inputId = NS(type)(key)
+  }
+  
+  session$sendCustomMessage("get_item", list(type=type, inputId=inputId, key=key))
+  
   return(input[[NS(type)(key)]])
 }
 
@@ -137,4 +144,4 @@ remove.storage <- function(type, key, session){
 input2storage <- function(type, key, inputId, prop, session){
   session$sendCustomMessage("input2storage", list(
     type=type, inputId=inputId, key=key, prop=prop))
-}
+}}
