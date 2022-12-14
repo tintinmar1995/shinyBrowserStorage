@@ -4,7 +4,7 @@
 \alias{read.storage}
 \title{Read object from browser's localStorage or sessionStorage}
 \usage{
-read.storage(type, key, input, session)
+read.storage(type, key, input, session, ns = NULL)
 }
 \arguments{
 \item{type}{Kind of browser storage to use (localStorage ou sessionStorage)}
